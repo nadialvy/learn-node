@@ -1,13 +1,13 @@
 import express from 'express';
 
-import { getUsers,getUserById, deleteUserById } from '../db/users';
+import { getUsers, getUserById, deleteUserById } from '../db/users';
 
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
-  try{
+  try {
     const users = await getUsers();
     return res.status(200).json(users);
 
-  } catch (error){
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
       message: "Internal server error"
@@ -16,34 +16,28 @@ export const getAllUsers = async (req: express.Request, res: express.Response) =
 }
 
 export const deleteUser = async (req: express.Request, res: express.Response) => {
-  try{
-    const _id = req.body;
+  try {
+    const { id } = req.params;
 
-    if(!_id){
+    // check the id is exist or not
+    const existingUser = getUserById(id);
+
+    if(!id || !existingUser){
       return res.status(400).json({
-        message: "Id is required"
+        message: "Try again, the id is not reachable"
       });
     }
 
-    const existingUser = await getUserById(_id);
+    const deleteUser = await deleteUserById(id);
 
-    if(!existingUser){
-      return res.status(400).json({
-        message: "User not foud, try correcting id"
-      });
-    }
-
-    const deleteUser = await deleteUserById(_id);
-    const updatedUser = await getUsers();
-
-    if(deleteUser){
+    if (deleteUser) {
       return res.status(200).json({
         message: "Success delete user",
-        remainingUser: updatedUser
+        deletedUser: deleteUser,
       })
     }
 
-  } catch (error){
+  } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Internal server error"

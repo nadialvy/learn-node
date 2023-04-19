@@ -5,5 +5,5 @@ import { isAuthenticated } from '../middlewares/index';
 
 export default (router: express.Router) => {
   router.get('/users', isAuthenticated, getAllUsers);
-  router.delete('/users', isAuthenticated, deleteUser);
+  router.delete('/users/:id', isAuthenticated, deleteUser);
 }
