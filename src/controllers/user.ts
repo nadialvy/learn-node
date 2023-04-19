@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getUsers, getUserById, deleteUserById } from '../db/users';
+import { getUsers, getUserById, deleteUserById, updateUserById } from '../db/users';
 
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
   try {
@@ -42,5 +42,31 @@ export const deleteUser = async (req: express.Request, res: express.Response) =>
     res.status(500).json({
       message: "Internal server error"
     });
+  }
+}
+
+export const updateUser = async (req: express.Request, res: express.Response) => {
+  try{
+    const { id } = req.params;
+    const { username } = req.body;
+
+    if(!username){
+      return res.status(400).json({
+        message: "Username are required"
+      });
+    }
+
+    const user = await getUserById(id);
+    user.username = username;
+
+    return res.status(200).json({
+      message: "Success to update user",
+      data: user,
+    });
+  } catch (error){
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error"
+    })
   }
 }
