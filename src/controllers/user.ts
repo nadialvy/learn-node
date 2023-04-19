@@ -22,7 +22,7 @@ export const deleteUser = async (req: express.Request, res: express.Response) =>
     // check the id is exist or not
     const existingUser = getUserById(id);
 
-    if(!id || !existingUser){
+    if (!id || !existingUser) {
       return res.status(400).json({
         message: "Try again, the id is not reachable"
       });
@@ -46,24 +46,30 @@ export const deleteUser = async (req: express.Request, res: express.Response) =>
 }
 
 export const updateUser = async (req: express.Request, res: express.Response) => {
-  try{
+  try {
     const { id } = req.params;
     const { username } = req.body;
 
-    if(!username){
+    if (!username) {
       return res.status(400).json({
         message: "Username are required"
       });
     }
 
-    const user = await getUserById(id);
-    user.username = username;
+    const updateUser = await updateUserById(
+      id,
+      { username: username },
+    );
+    const updatedUser = await getUserById(id);
 
-    return res.status(200).json({
-      message: "Success to update user",
-      data: user,
-    });
-  } catch (error){
+    if(updateUser){
+      return res.status(200).json({
+        message: "Success to update user",
+        data: updatedUser,
+      }).end();
+    }
+
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
       message: "Internal server error"
