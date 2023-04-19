@@ -1,8 +1,8 @@
 import express from 'express';
 
 import { getAllUsers } from '../controllers/user';
+import { isAuthenticated } from '../middlewares/index';
 
 export default (router: express.Router) => {
-  console.log('masuk router user');
-  router.get('/users', getAllUsers);
+  router.get('/users', isAuthenticated, getAllUsers);
 }

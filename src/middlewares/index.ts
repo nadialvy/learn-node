@@ -8,7 +8,7 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
     const sessionToken = req.cookies['NADIA-AUTH'];
 
     if(!sessionToken){
-      return res.send(403).json({
+      return res.status(403).json({
         message: "Token is not detected"
       });
     }
@@ -16,7 +16,7 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
     const existingUser = getUserBySessionToken(sessionToken);
 
     if(!existingUser){
-      return res.send(403).json({
+      return res.status(403).json({
         message: "User not found"
       });
     }
@@ -27,7 +27,7 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
 
   } catch (error){
     console.log(error);
-    return res.send(500).json({
+    return res.status(500).json({
       message: "Internal server error"
     })
   }
